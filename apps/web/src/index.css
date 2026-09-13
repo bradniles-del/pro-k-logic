@@ -1,0 +1,18 @@
+:root {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: #1a1a1a;
+  background: #fafafa;
+}
+body { margin: 0; }
+main { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+input, button { font: inherit; padding: 8px 12px; }
+input { border: 1px solid #999; border-radius: 6px; width: 100%; box-sizing: border-box; }
+button { border-radius: 6px; border: 1px solid #333; background: #fff; cursor: pointer; }
+button:disabled { opacity: 0.5; cursor: default; }
+form { display: grid; gap: 12px; }
+.error { color: #b00020; }
+.muted { color: #666; }
+pre { background: #eee; padding: 12px; border-radius: 6px; overflow-x: auto; }
+nav { display: flex; gap: 12px; justify-content: space-between; margin-bottom: 16px; }
+ul.projects { list-style: none; padding: 0; }
+ul.projects li { padding: 12px 0; border-bottom: 1px solid #ddd; }

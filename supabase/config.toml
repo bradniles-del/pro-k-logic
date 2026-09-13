@@ -1,0 +1,55 @@
+# Supabase CLI configuration for local development and CI.
+# Docs: https://supabase.com/docs/guides/local-development/cli/config
+# Only the sections needed for `supabase db start` / `supabase test db` are set;
+# everything else uses CLI defaults. The live project is lvllwbqqvshruramhnrj (ca-central-1).
+
+project_id = "pro-k-logic"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+# Must match the live project (random_token() relies on PG17 behaviour; see 0001 migration).
+major_version = 17
+
+[db.migrations]
+enabled = true
+schema_paths = []
+
+[db.seed]
+enabled = false
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:3000"
+additional_redirect_urls = ["prok://", "http://localhost:5173"]
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
+otp_length = 6
+otp_expiry = 3600
+
+[realtime]
+enabled = true
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[edge_runtime]
+enabled = false
+
+[analytics]
+enabled = false

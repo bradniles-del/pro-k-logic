@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  typecheck:
+    name: Typecheck (shared, web, mobile)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+
+  db-tests:
+    name: RLS tests (pgTAP, informational)
+    runs-on: ubuntu-latest
+    # Informational for now: the local stack needs PostGIS + pg_cron + pgTAP and
+    # a Postgres 17 image; failures here do not block merges until it is stable.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start local database (applies supabase/migrations)
+        run: supabase db start
+      - name: Run pgTAP tests in supabase/tests
+        run: supabase test db

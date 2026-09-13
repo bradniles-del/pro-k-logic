@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "Pro-K-Logic",
+    "slug": "pro-k-logic",
+    "version": "0.0.1",
+    "scheme": "prok",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.kleerform.prok",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Pro-K-Logic uses your location only while a shipment you accepted is in transit, to update its status and notify the receiving site.",
+        "NSCameraUsageDescription": "Scan QR codes on shipping paperwork and labels.",
+        "UIBackgroundModes": ["location"]
+      }
+    },
+    "android": {
+      "package": "com.kleerform.prok",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "FOREGROUND_SERVICE",
+        "FOREGROUND_SERVICE_LOCATION",
+        "CAMERA"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sqlite",
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Pro-K-Logic uses your location only while a shipment you accepted is in transit, to update its status and notify the receiving site.",
+          "isAndroidForegroundServiceEnabled": true,
+          "isAndroidBackgroundLocationEnabled": false,
+          "isIosBackgroundLocationEnabled": true
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Scan QR codes on shipping paperwork and labels."
+        }
+      ]
+    ]
+  }
+}

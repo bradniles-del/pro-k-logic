@@ -1,0 +1,17 @@
+{
+  "name": "pro-k-logic",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Pro-K-Logic monorepo: procurement and logistics tracking via QR documentation and live shipment status.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test:db": "echo 'Run RLS tests locally with: supabase db start && supabase test db   (see README.md)'"
+  }
+}
