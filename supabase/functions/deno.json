@@ -1,0 +1,13 @@
+{
+  "nodeModulesDir": "none",
+  "lock": false,
+  "compilerOptions": {
+    "lib": ["deno.window"],
+    "strict": true
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-import-prefix"]
+    }
+  }
+}

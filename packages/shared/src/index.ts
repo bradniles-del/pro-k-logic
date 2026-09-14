@@ -92,3 +92,7 @@ export const MAX_TRIP_MINUTES = 840;
 
 /** Default approach rings, in km from the receiving zone, outermost first. */
 export const DEFAULT_APPROACH_RINGS_KM = [40, 8, 0.5] as const;
+
+// BOM extraction (SRN PDF text -> candidate release lines)
+export { parseBomText, candidatesToCsv, BOM_UOMS, BOM_CSV_HEADER } from "./bom-parser";
+export type { BomCandidate, BomUom } from "./bom-parser";

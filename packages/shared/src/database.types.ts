@@ -121,6 +121,7 @@ export type Database = {
           created_at: string
           id: string
           location: unknown
+          location_name: string | null
           location_precision_m: number | null
           notes: string | null
           occurred_at: string
@@ -146,6 +147,7 @@ export type Database = {
           created_at?: string
           id: string
           location?: unknown
+          location_name?: string | null
           location_precision_m?: number | null
           notes?: string | null
           occurred_at: string
@@ -171,6 +173,7 @@ export type Database = {
           created_at?: string
           id?: string
           location?: unknown
+          location_name?: string | null
           location_precision_m?: number | null
           notes?: string | null
           occurred_at?: string
@@ -377,6 +380,83 @@ export type Database = {
           },
         ]
       }
+      extraction_jobs: {
+        Row: {
+          candidates: Json
+          created_at: string
+          document_id: string
+          error: string | null
+          finished_at: string | null
+          id: string
+          method: string | null
+          pages: number | null
+          project_id: string
+          release_id: string | null
+          requested_by: string | null
+          started_at: string | null
+          status: Database["public"]["Enums"]["extraction_status"]
+        }
+        Insert: {
+          candidates?: Json
+          created_at?: string
+          document_id: string
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          method?: string | null
+          pages?: number | null
+          project_id: string
+          release_id?: string | null
+          requested_by?: string | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["extraction_status"]
+        }
+        Update: {
+          candidates?: Json
+          created_at?: string
+          document_id?: string
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          method?: string | null
+          pages?: number | null
+          project_id?: string
+          release_id?: string | null
+          requested_by?: string | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["extraction_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "extraction_jobs_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "extraction_jobs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "extraction_jobs_release_id_fkey"
+            columns: ["release_id"]
+            isOneToOne: false
+            referencedRelation: "shipping_releases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "extraction_jobs_requested_by_fkey"
+            columns: ["requested_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       form_definitions: {
         Row: {
           created_at: string
@@ -419,6 +499,7 @@ export type Database = {
         Row: {
           created_at: string
           created_by: string | null
+          current_location_name: string | null
           current_project_id: string
           current_shipment_id: string | null
           current_status: Database["public"]["Enums"]["custody_status"]
@@ -430,6 +511,7 @@ export type Database = {
           length_m: number | null
           parent_unit_id: string | null
           release_id: string | null
+          search: unknown
           short_code: string
           status_event_id: string | null
           updated_at: string
@@ -439,6 +521,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
+          current_location_name?: string | null
           current_project_id: string
           current_shipment_id?: string | null
           current_status?: Database["public"]["Enums"]["custody_status"]
@@ -450,6 +533,7 @@ export type Database = {
           length_m?: number | null
           parent_unit_id?: string | null
           release_id?: string | null
+          search?: unknown
           short_code: string
           status_event_id?: string | null
           updated_at?: string
@@ -459,6 +543,7 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string | null
+          current_location_name?: string | null
           current_project_id?: string
           current_shipment_id?: string | null
           current_status?: Database["public"]["Enums"]["custody_status"]
@@ -470,6 +555,7 @@ export type Database = {
           length_m?: number | null
           parent_unit_id?: string | null
           release_id?: string | null
+          search?: unknown
           short_code?: string
           status_event_id?: string | null
           updated_at?: string
@@ -1214,36 +1300,61 @@ export type Database = {
       }
       release_lines: {
         Row: {
+          confirmed_at: string | null
+          confirmed_by: string | null
           description: string
           id: string
           line_no: number
           piece_mark: string | null
           po_line_id: string | null
+          provenance: Database["public"]["Enums"]["content_provenance"]
           qty: number
+          raw_text: string | null
           release_id: string
+          search: unknown
+          source_page: number | null
           uom: string
         }
         Insert: {
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           description: string
           id?: string
           line_no: number
           piece_mark?: string | null
           po_line_id?: string | null
+          provenance?: Database["public"]["Enums"]["content_provenance"]
           qty?: number
+          raw_text?: string | null
           release_id: string
+          search?: unknown
+          source_page?: number | null
           uom?: string
         }
         Update: {
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           description?: string
           id?: string
           line_no?: number
           piece_mark?: string | null
           po_line_id?: string | null
+          provenance?: Database["public"]["Enums"]["content_provenance"]
           qty?: number
+          raw_text?: string | null
           release_id?: string
+          search?: unknown
+          source_page?: number | null
           uom?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "release_lines_confirmed_by_fkey"
+            columns: ["confirmed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "release_lines_po_line_id_fkey"
             columns: ["po_line_id"]
@@ -1314,6 +1425,61 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shipment_updates: {
+        Row: {
+          author_id: string
+          created_at: string
+          eta_at: string | null
+          id: string
+          kind: Database["public"]["Enums"]["update_kind"]
+          project_id: string
+          shipment_id: string
+          text: string
+        }
+        Insert: {
+          author_id: string
+          created_at?: string
+          eta_at?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["update_kind"]
+          project_id: string
+          shipment_id: string
+          text?: string
+        }
+        Update: {
+          author_id?: string
+          created_at?: string
+          eta_at?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["update_kind"]
+          project_id?: string
+          shipment_id?: string
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shipment_updates_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shipment_updates_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shipment_updates_shipment_id_fkey"
+            columns: ["shipment_id"]
+            isOneToOne: false
+            referencedRelation: "shipments"
             referencedColumns: ["id"]
           },
         ]
@@ -1591,6 +1757,7 @@ export type Database = {
           provenance: Database["public"]["Enums"]["content_provenance"]
           qty: number
           release_line_id: string | null
+          search: unknown
           unit_id: string
           uom: string
         }
@@ -1604,6 +1771,7 @@ export type Database = {
           provenance?: Database["public"]["Enums"]["content_provenance"]
           qty?: number
           release_line_id?: string | null
+          search?: unknown
           unit_id: string
           uom?: string
         }
@@ -1617,6 +1785,7 @@ export type Database = {
           provenance?: Database["public"]["Enums"]["content_provenance"]
           qty?: number
           release_line_id?: string | null
+          search?: unknown
           unit_id?: string
           uom?: string
         }
@@ -1832,6 +2001,20 @@ export type Database = {
         Returns: undefined
       }
       expire_overdue_trips: { Args: never; Returns: number }
+      find_material: {
+        Args: { p_limit?: number; p_project_id: string; p_query: string }
+        Returns: {
+          description: string
+          location_name: string
+          po_number: string
+          rank: number
+          release_number: string
+          short_code: string
+          status: Database["public"]["Enums"]["custody_status"]
+          unit_id: string
+          zone_name: string
+        }[]
+      }
       generate_short_code: { Args: never; Returns: string }
       get_live_positions: {
         Args: {
@@ -1888,6 +2071,13 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      project_location_names: {
+        Args: { p_project_id: string }
+        Returns: {
+          location_name: string
+          unit_count: number
+        }[]
       }
       project_role_of: {
         Args: { p: string }
@@ -1999,6 +2189,7 @@ export type Database = {
         | "correction"
         | "safety_checkin"
       evidence_kind: "photo" | "signature" | "form" | "document"
+      extraction_status: "queued" | "running" | "done" | "failed"
       incident_status: "open" | "assessed" | "reported" | "closed"
       org_kind: "contractor" | "owner" | "supplier" | "carrier" | "other"
       org_role: "admin" | "member"
@@ -2013,6 +2204,16 @@ export type Database = {
         | "permission_lost"
         | "consent_revoked"
         | "driver_ended"
+      update_kind:
+        | "delay"
+        | "eta_change"
+        | "departed"
+        | "at_gate"
+        | "offloading"
+        | "released_driver"
+        | "issue"
+        | "resolved"
+        | "note"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2209,6 +2410,7 @@ export const Constants = {
         "safety_checkin",
       ],
       evidence_kind: ["photo", "signature", "form", "document"],
+      extraction_status: ["queued", "running", "done", "failed"],
       incident_status: ["open", "assessed", "reported", "closed"],
       org_kind: ["contractor", "owner", "supplier", "carrier", "other"],
       org_role: ["admin", "member"],
@@ -2223,6 +2425,17 @@ export const Constants = {
         "permission_lost",
         "consent_revoked",
         "driver_ended",
+      ],
+      update_kind: [
+        "delay",
+        "eta_change",
+        "departed",
+        "at_gate",
+        "offloading",
+        "released_driver",
+        "issue",
+        "resolved",
+        "note",
       ],
     },
   },

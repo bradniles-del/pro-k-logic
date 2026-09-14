@@ -41,7 +41,7 @@ cp apps/web/.env.example apps/web/.env
 npm run dev -w @prok/web         # http://localhost:5173
 ```
 
-Routes: `/sign-in` (email one-time code), `/` (your projects), `/s/:token` (consignee scan landing page, calls `resolve_token`).
+Routes: `/sign-in` (email one-time code), `/onboarding` (create organization / project, `?invite=<token>` accepts an invitation), `/projects`, `/projects/new`, `/p/:projectId` (project home), `/p/:projectId/srns`, `/p/:projectId/srns/new`, `/p/:projectId/srns/:releaseId` (SRN detail: documents, Extract BOM, lines, handling units, labels, shipments), `/p/:projectId/material` (search via `find_material`), `/p/:projectId/updates` (shipment updates), `/s/:token` (consignee scan landing page, calls `resolve_token`). The UI calls a shipping release an **SRN**. Queries live in `src/lib/api.ts`; pages in `src/pages/`, components in `src/components/`.
 
 **Mobile app**
 
@@ -50,7 +50,7 @@ cp apps/mobile/.env.example apps/mobile/.env
 npm run start -w @prok/mobile    # Metro; press i / a for a simulator with a dev build installed
 ```
 
-Build a development client with `eas build --profile development --platform ios|android` (profiles in `apps/mobile/eas.json`). Screens: sign-in (email OTP), projects list, scan placeholder. Android deliberately requests foreground location only (`ACCESS_BACKGROUND_LOCATION` is not declared): tracking runs inside a foreground service while a trip is active, per the plan.
+Build a development client with `eas build --profile development --platform ios|android` (profiles in `apps/mobile/eas.json`). Screens: `sign-in` (email OTP), `onboarding` (invitation code via `prok://invite/<token>` or `https://<host>/onboarding?invite=<token>`, or create a company), `(app)/index` (Home: big Scan button, project picker, Find material via `find_material`), `(app)/scan` (full-screen QR scanner plus "Type code instead" for `PKL-XXXX-XXXX`), `(app)/item/[token]` (resolves a QR token with `resolve_token` or a short code by direct lookup; unit passport with contents and last 10 custody events, or SRN with lines and units; action buttons are disabled until Phase 2/3). Queries live in `lib/api.ts`; the auth/profile gate in `lib/auth-state.ts`; field-friendly primitives (big buttons, large text, StyleSheet only) in `lib/ui.tsx`. Android deliberately requests foreground location only (`ACCESS_BACKGROUND_LOCATION` is not declared): tracking runs inside a foreground service while a trip is active, per the plan.
 
 **Shared package**
 

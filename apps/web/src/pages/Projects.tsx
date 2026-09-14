@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
-import type { ProjectRole } from "@prok/shared";
-import { supabase } from "../lib/supabase";
-
-type Membership = {
-  role: ProjectRole;
-  projects: { id: string; name: string; code: string | null } | null;
-};
+import { Link } from "react-router-dom";
+import TopNav from "../components/TopNav";
+import { listMemberships, type Membership } from "../lib/api";
 
 /** Every project the signed-in user belongs to, with their role. */
 export default function Projects() {
@@ -14,37 +10,43 @@ export default function Projects() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase
-      .from("project_members")
-      .select("role, projects(id,name,code)")
-      .then(({ data, error }) => {
-        if (error) setError(error.message);
-        else setRows(data ?? []);
-        setLoading(false);
-      });
+    listMemberships()
+      .then((m) => setRows(m.filter((r) => r.projects).sort((a, b) => a.projects!.name.localeCompare(b.projects!.name))))
+      .catch((e: Error) => setError(e.message))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
-    <main>
-      <nav>
-        <h1 style={{ margin: 0 }}>Projects</h1>
-        <button onClick={() => supabase.auth.signOut()}>Sign out</button>
-      </nav>
-      {error && <p className="error">{error}</p>}
-      {loading && <p className="muted">Loading...</p>}
-      {!loading && !error && rows.length === 0 && (
-        <p className="muted">You are not on any project yet. Ask a coordinator to invite you.</p>
-      )}
-      <ul className="projects">
-        {rows.map((m) => (
-          <li key={m.projects?.id ?? m.role}>
-            <strong>{m.projects?.name ?? "(unknown project)"}</strong>
-            <div className="muted">
-              {m.projects?.code} · {m.role}
-            </div>
-          </li>
-        ))}
-      </ul>
-    </main>
+    <>
+      <TopNav />
+      <main className="page">
+        <div className="page-head">
+          <h1>Projects</h1>
+          <Link className="btn primary" to="/projects/new">
+            New project
+          </Link>
+        </div>
+        {error && <p className="error">{error}</p>}
+        {loading && <p className="muted">Loading...</p>}
+        {!loading && !error && rows.length === 0 && (
+          <p className="muted">
+            You are not on any project yet. Create one, or ask a coordinator to invite you.
+          </p>
+        )}
+        <ul className="list">
+          {rows.map((m) => (
+            <li key={m.projects!.id}>
+              <Link to={`/p/${m.projects!.id}`} className="list-link">
+                <div>
+                  <strong>{m.projects!.name}</strong>
+                  <div className="muted small">{m.projects!.code ?? "no code"} · {m.projects!.timezone}</div>
+                </div>
+                <span className="chip chip-blue">{m.role}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </main>
+    </>
   );
 }

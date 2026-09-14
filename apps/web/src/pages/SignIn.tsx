@@ -33,14 +33,15 @@ export default function SignIn() {
     });
     setBusy(false);
     if (error) setError(error.message);
-    // On success App's onAuthStateChange redirects to "/".
+    // On success App's onAuthStateChange re-renders /sign-in, which honours ?next=.
   }
 
   return (
-    <main>
+    <main className="page narrow">
       <h1>Pro-K-Logic</h1>
+      <p className="muted">Sign in with your work email. We send a one-time code; there is no password.</p>
       {!sent ? (
-        <form onSubmit={sendCode}>
+        <form onSubmit={sendCode} className="form">
           <label>
             Work email
             <input
@@ -51,12 +52,12 @@ export default function SignIn() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </label>
-          <button type="submit" disabled={busy}>
+          <button className="btn primary" type="submit" disabled={busy}>
             {busy ? "Sending..." : "Send sign-in code"}
           </button>
         </form>
       ) : (
-        <form onSubmit={verify}>
+        <form onSubmit={verify} className="form">
           <p>We sent a code to {email}.</p>
           <label>
             Code
@@ -68,10 +69,10 @@ export default function SignIn() {
               onChange={(e) => setCode(e.target.value)}
             />
           </label>
-          <button type="submit" disabled={busy}>
+          <button className="btn primary" type="submit" disabled={busy}>
             {busy ? "Checking..." : "Verify"}
           </button>
-          <button type="button" onClick={() => setSent(false)}>
+          <button className="btn" type="button" onClick={() => setSent(false)}>
             Use a different email
           </button>
         </form>
