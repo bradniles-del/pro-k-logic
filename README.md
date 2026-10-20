@@ -81,6 +81,12 @@ supabase db push
 
 Add new migrations with `supabase migration new <name>`; never edit an applied migration.
 
+**Every new table needs explicit grants.** Since 2026-10-30 Supabase no longer auto-grants
+`anon` / `authenticated` / `service_role` on new objects in `public`, so a table created without
+a `grant` is invisible to supabase-js and PostgREST ("permission denied"). Put the grants in the
+same migration as the `create table`, before enabling RLS — the template is at the bottom of
+`supabase/migrations/20261020120000_explicit_table_grants.sql`.
+
 ## RLS tests
 
 The Phase 0 tests are pgTAP in `supabase/tests/001_isolation.sql`.
